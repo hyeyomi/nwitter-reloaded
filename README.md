@@ -1,3 +1,3 @@
 # Twitter Clone 
-## React + TypeScript + Vite
-## Server : Firebase
+- React + TypeScript + Vite
+- Server : Firebase
