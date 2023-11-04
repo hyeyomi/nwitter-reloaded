@@ -85,7 +85,7 @@ export default function PostTweetForm() {
         //우리는 업로드된 파일이 저장되는 폴더 명과 파일명을 지정할 수 있음
         const locationRef = ref(
           storage,
-          `tweets/${user.uid}-${user.displayName}/${doc.id}`
+          `tweets/${user.uid}/${doc.id}`
         );
 
         //적절한 참조를 만들었으면 uploadBytes() 메서드를 호출해 스토리지에 파일 업로드
