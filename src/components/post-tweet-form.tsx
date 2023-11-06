@@ -40,6 +40,10 @@ const AttachFileButton = styled.label`
   text-align: center;
   font-size: 14px;
   font-weight: 600;
+  transition: all 0.2s ease-in-out;
+  &:hover{
+    opacity: 0.8;
+  }
 `;
 const AttachFileInput = styled.input`
   display: none;
@@ -53,6 +57,7 @@ const SubmitBtn = styled.input`
   color: white;
   font-size: 16px;
   cursor: pointer;
+  transition: all 0.2s ease-in-out;
   &:hover,
   &:active {
     opacity: 0.8;
@@ -124,7 +129,9 @@ export default function PostTweetForm() {
         onChange={onChange}
       />
       <AttachFileButton htmlFor='file'>
-        {file ? 'Photo added ' : 'Add Photo'}
+        {file ? 'Photo added ✔ ' : `Add Photo`
+      
+        }
       </AttachFileButton>
       <AttachFileInput
         onChange={onFileChange}
