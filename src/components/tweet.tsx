@@ -173,7 +173,7 @@ export default function Tweet({
   const [changeTweet, setTweet] = useState(tweet);
   const [changeFile, setFile] = useState<File | null>(null);
   const user = auth.currentUser;
-  const [profileImg, setProfileImg] = useState(user?.photoURL);
+  const [profileImg] = useState(user?.photoURL);
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTweet(e.target.value);
   };
