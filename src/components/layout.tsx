@@ -26,6 +26,10 @@ const MenuItem = styled.div`
     height: 50px;
     width: 50px;
     border-radius: 50%;
+    transition: all 0.2s ease-in-out;
+    &:hover{
+      opacity: 0.8;
+    }
     svg{
         width: 30px;
         fill: white;

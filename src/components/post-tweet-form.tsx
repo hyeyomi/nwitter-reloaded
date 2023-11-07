@@ -41,7 +41,7 @@ const AttachFileButton = styled.label`
   font-size: 14px;
   font-weight: 600;
   transition: all 0.2s ease-in-out;
-  &:hover{
+  &:hover {
     opacity: 0.8;
   }
 `;
@@ -68,6 +68,9 @@ export default function PostTweetForm() {
   const [isLoading, setLoading] = useState(false);
   const [tweet, setTweet] = useState('');
   const [file, setFile] = useState<File | null>(null); // 타입스크립트 구문
+  let date = new Date();
+  let hours = date.getHours().toString().padStart(2, '0');
+  let minutes = date.getMinutes().toString().padStart(2, '0');
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTweet(e.target.value);
   };
@@ -84,14 +87,14 @@ export default function PostTweetForm() {
         createdAt: Date.now(),
         username: user.displayName || 'Anonymous',
         userId: user.uid,
+        date: `${date.getFullYear()}. ${
+          date.getMonth() + 1
+        }. ${date.getDate()}. ${hours}:${minutes}`,
       });
       if (file) {
         //파일 이름을 포함하여 파일의 전체 경로를 가리키는 참조 만들기
         //우리는 업로드된 파일이 저장되는 폴더 명과 파일명을 지정할 수 있음
-        const locationRef = ref(
-          storage,
-          `tweets/${user.uid}/${doc.id}`
-        );
+        const locationRef = ref(storage, `tweets/${user.uid}/${doc.id}`);
 
         //적절한 참조를 만들었으면 uploadBytes() 메서드를 호출해 스토리지에 파일 업로드
         const result = await uploadBytes(locationRef, file);
@@ -113,7 +116,7 @@ export default function PostTweetForm() {
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
-    if (files && files.length === 1 && files[0].size <  1 * 1024 * 1024) {
+    if (files && files.length === 1 ) {//&& files[0].size < 1 * 1024 * 1024
       setFile(files[0]);
     }
   };
@@ -129,9 +132,7 @@ export default function PostTweetForm() {
         onChange={onChange}
       />
       <AttachFileButton htmlFor='file'>
-        {file ? 'Photo added ✔ ' : `Add Photo`
-      
-        }
+        {file ? 'Photo added ✔ ' : `Add Photo`}
       </AttachFileButton>
       <AttachFileInput
         onChange={onFileChange}

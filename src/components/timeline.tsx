@@ -18,6 +18,7 @@ export interface ITweet {
   userId: string;
   username: string;
   createdAt: number;
+  date:string;
 }
 const Wrapper = styled.div`
   display: flex;
@@ -61,7 +62,7 @@ export default function Timeline() {
       //실시간으로 데이터를 추출하기 위해서 리스너를 사용함
       unsubscribe = await onSnapshot(tweetsQuery, (snapshot) => {
         const tweets = snapshot.docs.map((doc) => {
-          const { tweet, username, createdAt, userId, photo } = doc.data();
+          const { tweet, username, createdAt, userId, photo,date } = doc.data();
           return {
             tweet,
             username,
@@ -69,6 +70,7 @@ export default function Timeline() {
             userId,
             photo,
             id: doc.id,
+            date,
           };
         });
         setTweets(tweets);

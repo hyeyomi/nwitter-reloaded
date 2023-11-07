@@ -20,11 +20,15 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 const AvatarUpload = styled.label`
   cursor: pointer;
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 120px;
   overflow: hidden;
   border-radius: 50%;
   background-color: #1d9bf0;
@@ -53,10 +57,27 @@ const Name = styled.span`
   margin-left: 22px;
 `;
 const Tweets = styled.div`
-  margin-top: 50px;
+  margin-top: 20px;
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  height: 100%;
+  //padding: 0px 10px;
+  overflow-y: scroll;
+  &::-webkit-scrollbar{
+    display: none;
+  }
+  /* &::-webkit-scrollbar {
+    width: 15px;
+    border-radius: 10px;
+    background-color: #ffffffb8;
+    box-shadow: inset 0px 0px 5px white;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: #000000e1;
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    border-radius: 10px;
+  } */
+
   align-items: center;
   gap: 10px;
 `;
@@ -124,7 +145,7 @@ export default function Profile() {
     );
     const snapshot = await getDocs(tweetsQuery);
     const tweets = snapshot.docs.map((doc) => {
-      const { tweet, username, createdAt, userId, photo } = doc.data();
+      const { tweet, username, createdAt, userId, photo, date } = doc.data();
       return {
         tweet,
         username,
@@ -132,6 +153,7 @@ export default function Profile() {
         userId,
         photo,
         id: doc.id,
+        date,
       };
     });
     setTweets(tweets);
@@ -143,15 +165,20 @@ export default function Profile() {
   const onEditName = async () => {
     if (!user) return;
     setNameEdit((prev) => !prev);
-    console.log(user?.displayName);
-    await updateProfile(user, {
-      displayName: name,
-    });
+    try {
+      await updateProfile(user, {
+        displayName: name,
+      });
+      console.log(user.displayName);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setName(e.target.value);
   };
+
   return (
     <Wrapper>
       <AvatarUpload htmlFor='avatar'>
@@ -182,7 +209,7 @@ export default function Profile() {
         {nameEdit ? (
           <NameEditInput onChange={onChange}></NameEditInput>
         ) : (
-          <Name>{user?.displayName ? user.displayName : 'Anonymous'}</Name>
+          <Name>{user?.displayName ? name : 'Anonymous'}</Name>
         )}
         <EditNameBtn onClick={onEditName}>
           {nameEdit ? (

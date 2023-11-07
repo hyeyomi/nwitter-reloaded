@@ -13,12 +13,18 @@ const Wrapper = styled.div`
   display: grid;
   grid-template-columns: 3fr 1fr;
   padding: 20px;
+  padding-top: 25px;
   border: 2px solid rgba(255, 255, 255, 50%);
   border-radius: 20px;
   margin-bottom: 25px;
+  &:hover{
+    border: 2px solid rgba(255, 255, 255, 30%);
+  }
+  transition: all 0.2s ease-in-out;
 `;
 const Column = styled.div`
   display: flex;
+  position: relative;
   flex-direction: column;
   &[id='photo'] {
     position: relative;
@@ -29,36 +35,45 @@ const Column = styled.div`
 `;
 const Username = styled.span`
   padding: 0px 5px;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 600;
 `;
 const Payload = styled.p`
   white-space: pre-wrap;
   padding: 5px;
   margin: 10px 0px;
-  font-size: 15px;
+  font-size: 17px;
   line-height: 1.5em;
   max-height: fit-content;
+  font-weight: 600;
 `;
 const Photo = styled.img`
-  width: 110px;
-  height: 110px;
+  width: 130px;
+  height: 130px;
+  margin-right: 10px;
   border-radius: 15px;
 `;
 
 const DeleteButton = styled.button`
-  font-weight: 600;
-  font-size: 12px;
-  text-transform: uppercase;
-  color: tomato;
+  position: absolute;
+  top: -18px;
+  right: -165px;
+  color: white;
+  opacity: 0.5;
+  display: flex;
+  justify-items: center;
+  align-items: center;
   background-color: black;
-  border: 2px solid #ff6347d4;
-  width: 70px;
-  padding: 5px;
-  border-radius: 10px;
+  border: none;
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+  border-radius: 50%;
+  transition: all 0.1s ease-in-out;
   cursor: pointer;
   &:hover {
-    color: white;
+    opacity: 0.8;
+    background-color: #ffffff3f;
   }
 `;
 
@@ -67,24 +82,28 @@ const EditButton = styled.button`
   font-size: 12px;
   text-transform: uppercase;
   color: tomato;
+  opacity: 0.8;
   background-color: black;
   border: 2px solid #ff6347d4;
-  width: 70px;
-  padding: 5px;
-  border-radius: 10px;
-  margin-left: 10px;
+  width: 50px;
+  padding: 4px;
+  border-radius: 5px;
+  margin-left: 15px;
+  transition: all 0.2s ease-in-out;
   cursor: pointer;
   &:hover {
-    color: white;
+    opacity: 1;
+    //color: white;
   }
 `;
 const Div = styled.div`
-  margin-top: 10px;
+  margin-top: 20px;
+  margin-left: -10px;
   display: flex;
 `;
 
 const TextArea = styled.textarea`
-  width: 100%;
+  width: 90%;
   resize: none;
   margin: 12px 0px;
   padding: 10px 15px;
@@ -105,8 +124,10 @@ const TextArea = styled.textarea`
 const EditPhotoBtn = styled.label`
   z-index: 2;
   position: absolute;
-  width: 60px;
-  height: 60px;
+  left: 42px;
+  top: 60px;
+  width: 62px;
+  height: 62px;
   color: white;
   cursor: pointer;
   &:hover {
@@ -118,15 +139,44 @@ const EditPhotoInput = styled.input`
   display: none;
 `;
 
-export default function Tweet({ username, tweet, photo, userId, id }: ITweet) {
+const Date = styled.div`
+  padding: 0px 5px;
+  opacity: 0.8;
+  font-weight: 600;
+  font-size: 13px;
+`;
+
+const ProfileImg = styled.img`
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+`;
+
+const User = styled.div`
+  display: flex;
+  align-items: center;
+  svg{
+    width: 45px;
+    height: 45px;
+     border-radius: 50%;
+  }
+`;
+export default function Tweet({
+  username,
+  tweet,
+  photo,
+  userId,
+  id,
+  date,
+}: ITweet) {
   const [edit, setEdit] = useState<boolean>(false);
   const [changeTweet, setTweet] = useState(tweet);
   const [changeFile, setFile] = useState<File | null>(null);
   const user = auth.currentUser;
+  const [profileImg, setProfileImg] = useState(user?.photoURL);
   const onChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setTweet(e.target.value);
   };
-
   const onDelete = async () => {
     const ok = confirm('Are you sure you want to delete this tweet?');
     if (!ok || user?.uid !== userId) return;
@@ -151,14 +201,12 @@ export default function Tweet({ username, tweet, photo, userId, id }: ITweet) {
         tweet: changeTweet,
         //createdAt:Date.now(),
       });
-      if(changeFile){
-        const locationRef = ref(
-          storage,
-          `tweets/${user.uid}/${id}`,
-        );
+      console.log(changeTweet);
+      if (changeFile) {
+        const locationRef = ref(storage, `tweets/${user.uid}/${id}`);
         const result = await uploadBytes(locationRef, changeFile);
         const url = await getDownloadURL(result.ref);
-        await updateDoc(doc(db,'tweets',id), {
+        await updateDoc(doc(db, 'tweets', id), {
           photo: url,
         });
       }
@@ -177,7 +225,16 @@ export default function Tweet({ username, tweet, photo, userId, id }: ITweet) {
   return (
     <Wrapper>
       <Column>
-        <Username>{username}</Username>
+        <User>
+          {profileImg && user?.uid === userId ? (
+            <ProfileImg src={profileImg} />
+          ) : <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
+        </svg>
+        
+        }
+          <Username>{username}</Username>
+        </User>
         {edit ? (
           <TextArea
             value={changeTweet}
@@ -188,10 +245,24 @@ export default function Tweet({ username, tweet, photo, userId, id }: ITweet) {
         ) : (
           <Payload>{tweet}</Payload>
         )}
-
+        <Date>{date}</Date>
         {user?.uid === userId ? (
           <Div>
-            <DeleteButton onClick={onDelete}>Delete</DeleteButton>
+            <DeleteButton onClick={onDelete}>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                fill='none'
+                viewBox='0 0 24 24'
+                strokeWidth='1.5'
+                stroke='currentColor'
+              >
+                <path
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  d='M6 18L18 6M6 6l12 12'
+                />
+              </svg>
+            </DeleteButton>
             <EditButton onClick={onEdit}>{edit ? 'OK' : 'Edit'}</EditButton>
           </Div>
         ) : null}
