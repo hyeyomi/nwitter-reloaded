@@ -5,6 +5,7 @@ import Timeline from '../components/timeline';
 const Wrapper = styled.div`
   display: grid;
   overflow-y: scroll;
+  padding: 0px 20px;
   gap: 50px;
   grid-template-rows: 1fr 5fr;
   &::-webkit-scrollbar{

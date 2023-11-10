@@ -11,9 +11,8 @@ import {
 import { useState } from 'react';
 const Wrapper = styled.div`
   display: grid;
-  grid-template-columns: 3fr 1fr;
+  //grid-template-columns: 3fr 1fr;
   padding: 20px;
-  padding-top: 25px;
   border: 2px solid rgba(255, 255, 255, 50%);
   border-radius: 20px;
   margin-bottom: 25px;
@@ -35,29 +34,29 @@ const Column = styled.div`
 `;
 const Username = styled.span`
   padding: 0px 5px;
-  font-size: 17px;
+  font-size: 18px;
   font-weight: 600;
+  margin-left: 5px;
 `;
 const Payload = styled.p`
   white-space: pre-wrap;
   padding: 5px;
-  margin: 10px 0px;
+  margin-top: 5px;
   font-size: 17px;
   line-height: 1.5em;
   max-height: fit-content;
   font-weight: 600;
 `;
 const Photo = styled.img`
-  width: 130px;
-  height: 130px;
-  margin-right: 10px;
-  border-radius: 15px;
+  width: 230px;
+  height: 180px;
+  border-radius: 10px;
 `;
 
 const DeleteButton = styled.button`
   position: absolute;
-  top: -18px;
-  right: -165px;
+  top: 0px;
+  right: 0px;
   color: white;
   opacity: 0.5;
   display: flex;
@@ -79,15 +78,15 @@ const DeleteButton = styled.button`
 
 const EditButton = styled.button`
   font-weight: 600;
-  font-size: 12px;
+  font-size: 13px;
   text-transform: uppercase;
   color: tomato;
-  opacity: 0.8;
+  opacity: 0.5;
   background-color: black;
   border: 2px solid #ff6347d4;
-  width: 50px;
-  padding: 4px;
-  border-radius: 5px;
+  width: 60px;
+  padding: 3px 5px;
+  border-radius: 2px;
   margin-left: 15px;
   transition: all 0.2s ease-in-out;
   cursor: pointer;
@@ -97,12 +96,15 @@ const EditButton = styled.button`
   }
 `;
 const Div = styled.div`
-  margin-top: 20px;
+  margin-top: 25px;
   margin-left: -10px;
   display: flex;
+  justify-content: space-between;
+
 `;
 
 const TextArea = styled.textarea`
+opacity: 0.8;
   width: 90%;
   resize: none;
   margin: 12px 0px;
@@ -124,10 +126,10 @@ const TextArea = styled.textarea`
 const EditPhotoBtn = styled.label`
   z-index: 2;
   position: absolute;
-  left: 42px;
-  top: 60px;
-  width: 62px;
-  height: 62px;
+  left: 67px;
+  top: 188px;
+  width: 100px;
+  height: 70px;
   color: white;
   cursor: pointer;
   &:hover {
@@ -142,13 +144,17 @@ const EditPhotoInput = styled.input`
 const Date = styled.div`
   padding: 0px 5px;
   opacity: 0.8;
+  margin-left: 5px;
+  margin-bottom: -10px;
   font-weight: 600;
   font-size: 13px;
+  width: fit-content;
+
 `;
 
 const ProfileImg = styled.img`
-  width: 40px;
-  height: 40px;
+  width: 45px;
+  height: 45px;
   border-radius: 50%;
 `;
 
@@ -161,6 +167,39 @@ const User = styled.div`
      border-radius: 50%;
   }
 `;
+
+const Email = styled.span`
+  font-size: 13px;
+  font-weight: 500;
+  opacity: 0.8;
+`
+
+const PhotoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 15px 5px;
+`
+const LikeButton = styled.button`
+  color: pink;
+  padding: 3px 5px;
+  width: 60px;
+  background-color: black;
+  border: 2px solid white;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 2px;
+  cursor: pointer;
+  svg{
+    width: 22px;
+  }
+`
+const LikeText = styled.span`
+  color: white;
+  font-size: 15px;
+
+`
+
 export default function Tweet({
   username,
   tweet,
@@ -233,7 +272,13 @@ export default function Tweet({
         </svg>
         
         }
-          <Username>{username}</Username>
+          <Username>{username} <Email>@{user?.email?.split('@')[0]}</Email>           <DeleteButton onClick={onDelete}>
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" >
+  <path strokeLinecap="round" strokeLinejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+</svg>
+
+            </DeleteButton>
+          </Username>
         </User>
         {edit ? (
           <TextArea
@@ -245,31 +290,9 @@ export default function Tweet({
         ) : (
           <Payload>{tweet}</Payload>
         )}
-        <Date>{date}</Date>
-        {user?.uid === userId ? (
-          <Div>
-            <DeleteButton onClick={onDelete}>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                fill='none'
-                viewBox='0 0 24 24'
-                strokeWidth='1.5'
-                stroke='currentColor'
-              >
-                <path
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  d='M6 18L18 6M6 6l12 12'
-                />
-              </svg>
-            </DeleteButton>
-            <EditButton onClick={onEdit}>{edit ? 'OK' : 'Edit'}</EditButton>
-          </Div>
-        ) : null}
-      </Column>
 
-      {photo ? (
-        <Column id='photo'>
+{photo ? (
+        <PhotoContainer id='photo'>
           {edit ? (
             <>
               <EditPhotoBtn htmlFor='changeFile'>
@@ -301,8 +324,22 @@ export default function Tweet({
             </>
           ) : null}
           <Photo src={photo} />
-        </Column>
+        </PhotoContainer>
       ) : null}
+
+        <Date>{date}</Date>
+        {user?.uid === userId ? (
+          <Div>
+            <EditButton onClick={onEdit}>{edit ? 'OK' : 'Edit'}</EditButton>
+            <LikeButton><svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" >
+  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+</svg> 
+<LikeText>0</LikeText>
+</LikeButton>
+          </Div>
+        ) : null}
+      </Column>
+
     </Wrapper>
   );
 }
